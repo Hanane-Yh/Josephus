@@ -34,3 +34,6 @@ class Logic:
 
     def get_steps(self):
         return self.steps
+
+    def get_killed(self):
+        return self.killed
