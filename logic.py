@@ -7,10 +7,10 @@ class Logic:
         self.steps = []
         self.killed = []
 
-    def survivor(self):
+    def survivor(self) -> list:
         return self.steps[-1]
 
-    def josephus(self, k: int, index: int):
+    def josephus(self, k: int, index: int) -> list:
         self.steps.append(self.linkedList.get_values())
 
         if len(self.linkedList) == 1:
@@ -32,8 +32,8 @@ class Logic:
 
         return self.steps
 
-    def get_steps(self):
+    def get_steps(self) -> list:
         return self.steps
 
-    def get_killed(self):
+    def get_killed(self) -> list:
         return self.killed

@@ -51,7 +51,7 @@ class MainCanvas:
         reset_btn.grid(row=2, column=0, columnspan=10, sticky="nsew")
         return frame
 
-    def draw_nodes(self, values, color):
+    def draw_nodes(self, values: list, color: str) -> tk.Canvas:
         """draws each step on canvas"""
         # adjusting circles sizes based on the number of nodes
         if len(self.list) <= 20:
@@ -80,7 +80,7 @@ class MainCanvas:
 
         return self.canvas
 
-    def show_steps(self):
+    def show_steps(self) -> None:
         """shows every step on canvas"""
         color = "black"
         logic = Logic(self.list)
@@ -129,7 +129,7 @@ class MainCanvas:
         k_entry.delete(0, "end")
         self.canvas.delete("all")
 
-    def display_killed(self):
+    def display_killed(self) -> str:
         """displays killed people ordered by the time they got killed"""
         result = ""
         for i in range(len(self.killed)):
@@ -138,7 +138,7 @@ class MainCanvas:
                 result += "\n "
         return result
 
-    def display_results(self):
+    def display_results(self) -> None:
         killed_people = self.display_killed()
         info_frame = tk.Tk()
         info_frame.title("Info")
