@@ -55,15 +55,15 @@ class MainCanvas:
         if len(self.list) <= 20:
             r = 50
             radius = 200
-            delay = 400
+            delay = 350
         elif len(self.list) <= 50:
             r = 30
             radius = 250
-            delay = 300
+            delay = 200
         else:
             r = 20
             radius = 325
-            delay = 200
+            delay = 150
 
         # draws alive people on the canvas
         theta = -math.pi / 2
@@ -71,14 +71,18 @@ class MainCanvas:
             x_start = (self.width / 2) + (radius * math.cos(theta)) - r / 2
             y_start = (self.height / 2) + radius * math.sin(theta)
             self.canvas.create_oval(x_start, y_start, (x_start + r), (y_start + r), fill=color)
-            self.canvas.create_text(x_start + r / 2, y_start + r / 2, text=values[i])
+            self.canvas.create_text(x_start + r / 2, y_start + r / 2, text=values[i], fill="white")
             theta += (2 * math.pi) / len(self.list)
 
         # reporting each step
+        label = tk.Label(self.canvas)
+        label.place(x=25, y=25)
         if counter < len(self.killed):
-            self.canvas.create_text(50, 25, text=f"killed: {self.killed[counter]}", fill="black", font='Arial, 20')
+            label.config(text="killed:")
+            self.canvas.create_text(90, 37, text=self.killed[counter], fill="black", font='Arial, 20')
         else:
-            self.canvas.create_text(50, 25, text=f"alive: {self.steps[-1][0]}", fill="black", font='Arial, 20')
+            label.config(text="alive")
+            self.canvas.create_text(90, 37, text=self.steps[-1][0], fill="black", font='Arial, 20')
 
         self.root.update()
         self.root.after(delay)
@@ -151,11 +155,11 @@ class MainCanvas:
         info_frame = tk.Tk()
         info_frame.title("Info")
         info_frame.eval('tk::PlaceWindow . center')
+        info_frame.geometry("250x400")
 
         killed = tk.Label(info_frame, text=f"\ndead people:\n{killed_people}\n")
-        survived = tk.Label(info_frame, text=f"\nsurvived:\n {self.steps[-1][0]}\n")
+        survived = tk.Label(info_frame, text=f"\nsurvived:\n {self.steps[-1][0]}")
         killed.place(relx=0.5, rely=0.25, anchor="center")
         survived.place(relx=0.5, rely=0.75, anchor="center")
 
-        info_frame.resizable(False, False)
         info_frame.mainloop()
