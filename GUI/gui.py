@@ -51,8 +51,9 @@ class MainCanvas:
         reset_btn.grid(row=2, column=0, columnspan=10, sticky="nsew")
         return frame
 
-    def draw_nodes(self, values: list, color: str) -> tk.Canvas:
+    def draw_nodes(self, values: list, color: str, counter: int) -> tk.Canvas:
         """draws each step on canvas"""
+
         # adjusting circles sizes based on the number of nodes
         if len(self.list) <= 20:
             r = 50
@@ -67,6 +68,7 @@ class MainCanvas:
             radius = 325
             delay = 200
 
+        # draws alive people on the canvas
         theta = -math.pi / 2
         for i in range(len(self.list)):
             x_start = (self.width / 2) + (radius * math.cos(theta)) - r / 2
@@ -74,6 +76,12 @@ class MainCanvas:
             self.canvas.create_oval(x_start, y_start, (x_start + r), (y_start + r), fill=color)
             self.canvas.create_text(x_start + r / 2, y_start + r / 2, text=values[i])
             theta += (2 * math.pi) / len(self.list)
+
+        # reporting each step
+        if counter < len(self.killed):
+            self.canvas.create_text(50, 25, text=f"killed: {self.killed[counter]}", fill="black", font='Arial, 20')
+        else:
+            self.canvas.create_text(50, 25, text=f"alive: {self.steps[-1][0]}", fill="black", font='Arial, 20')
 
         self.root.update()
         self.root.after(delay)
@@ -93,7 +101,7 @@ class MainCanvas:
             self.list.add_multiple_nodes(values)
             if i == len(self.steps) - 1:
                 color = "green"
-            self.draw_nodes(values, color)
+            self.draw_nodes(values, color, counter=i)
 
     def submit_command(self, n_entry: tk.Entry, k_entry: tk.Entry, reset_btn=None) -> None:
         """sets n and k variables entered by user"""
@@ -101,7 +109,7 @@ class MainCanvas:
         self.n = int(n_entry.get()) if n_entry.get() != '' else 0
         self.k = int(k_entry.get()) if k_entry.get() != '' else 0
 
-        if self.n > 0 and self.k > 0:
+        if self.n > 1 and self.k > 0:
             for i in range(1, int(n_entry.get()) + 1):
                 values.append(i)
             self.list = LinkedList()
@@ -110,13 +118,14 @@ class MainCanvas:
             k_entry.config(state="disabled")
             reset_btn.config(state="disabled")
             self.show_steps()
+            # self.display_guit()
+            reset_btn.config(state="normal")
             # displaying killed people's information
             killed_people = self.display_killed()
             self.root.after(1000)
             self.display_results()
-            reset_btn.config(state="normal")
 
-        else:
+        elif self:
             messagebox.showerror(title="invalid input", message="n and k must be greater than 0")
 
     def reset_command(self, n_entry: tk.Entry, k_entry: tk.Entry) -> None:
@@ -142,7 +151,8 @@ class MainCanvas:
         killed_people = self.display_killed()
         info_frame = tk.Tk()
         info_frame.title("Info")
-        killed = tk.Label(info_frame, text=f"\nkilled people:\n{killed_people}\n")
+        info_frame.eval('tk::PlaceWindow . center')
+        killed = tk.Label(info_frame, text=f"\ndead people:\n{killed_people}\n")
         survived = tk.Label(info_frame, text=f"\nsurvived:\n {self.steps[-1][0]}\n")
         killed.place(relx=0.5, rely=0.25, anchor="center")
         survived.place(relx=0.5, rely=0.75, anchor="center")
