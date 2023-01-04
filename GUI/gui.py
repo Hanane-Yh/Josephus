@@ -7,22 +7,22 @@ from structures.linked_list import LinkedList
 
 class MainCanvas:
     def __init__(self, width: int, height: int):
-        self.n = 0
-        self.k = 0
         self.height = height
         self.width = width
         self.list = None
         self.steps = None
         self.killed = None
+        self.n = 0
+        self.k = 0
 
         self.root = tk.Tk()
-        self.root.title("Josephus")
+        self.root.title("Josephus Visualizer")
         self.root.geometry(f"{self.width}x{self.height + 110}")
         self.root.eval('tk::PlaceWindow . center')
-        self.canvas = tk.Canvas(self.root, width=self.width, height=self.height + 20, bg="white")
 
-        top_menu = self.top_menu()
-        top_menu.pack()
+        self.top_menu().pack()
+
+        self.canvas = tk.Canvas(self.root, width=self.width, height=self.height + 20, bg="white")
         self.canvas.pack()
 
         self.root.resizable(False, False)
@@ -39,9 +39,6 @@ class MainCanvas:
         k_entry = tk.Entry(frame, width=5)
         reset_btn = tk.Button(frame, text="Reset", command=lambda: self.reset_command(n_entry, k_entry))
         submit_btn = tk.Button(frame, text="Submit", command=lambda: self.submit_command(n_entry, k_entry, reset_btn))
-
-        n = n_entry.get()
-        k = k_entry.get()
 
         n_label.grid(row=0, column=0)
         n_entry.grid(row=0, column=1)
@@ -85,7 +82,6 @@ class MainCanvas:
 
         self.root.update()
         self.root.after(delay)
-
         return self.canvas
 
     def show_steps(self) -> None:
@@ -94,6 +90,7 @@ class MainCanvas:
         logic = Logic(self.list)
         self.steps = logic.josephus(self.k - 1, 0)
         self.killed = logic.get_killed()
+
         for i in range(len(self.steps)):
             self.canvas.delete("all")
             values = self.steps[i]
@@ -118,15 +115,15 @@ class MainCanvas:
             k_entry.config(state="disabled")
             reset_btn.config(state="disabled")
             self.show_steps()
-            # self.display_guit()
             reset_btn.config(state="normal")
+
             # displaying killed people's information
-            killed_people = self.display_killed()
-            self.root.after(1000)
+            self.display_killed()
+            self.root.after(500)
             self.display_results()
 
-        elif self:
-            messagebox.showerror(title="invalid input", message="n and k must be greater than 0")
+        else:
+            messagebox.showerror(title="invalid input", message="n and k must be non negative values")
 
     def reset_command(self, n_entry: tk.Entry, k_entry: tk.Entry) -> None:
         """resets n and k variables to None"""
@@ -148,13 +145,17 @@ class MainCanvas:
         return result
 
     def display_results(self) -> None:
+        """opens a new window to show final results"""
         killed_people = self.display_killed()
+
         info_frame = tk.Tk()
         info_frame.title("Info")
         info_frame.eval('tk::PlaceWindow . center')
+
         killed = tk.Label(info_frame, text=f"\ndead people:\n{killed_people}\n")
         survived = tk.Label(info_frame, text=f"\nsurvived:\n {self.steps[-1][0]}\n")
         killed.place(relx=0.5, rely=0.25, anchor="center")
         survived.place(relx=0.5, rely=0.75, anchor="center")
+
         info_frame.resizable(False, False)
         info_frame.mainloop()

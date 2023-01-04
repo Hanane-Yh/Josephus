@@ -2,7 +2,9 @@ from GUI.gui import MainCanvas
 
 
 def main():
-    a = MainCanvas(700, 700)
+    HEIGHT = 700
+    WIDTH = 700
+    MainCanvas(WIDTH, HEIGHT)
 
 
 if __name__ == '__main__':
